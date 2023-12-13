@@ -1,89 +1,28 @@
+
+Wali Haider
+4:26 PM (0 minutes ago)
+to me
+
 import streamlit as st
+import requests
 
-import openai
+BRAINSHOP_API_KEY = "xhtYMPBNaG5ykdiz"
+BRAINSHOP_BRAIN_ID = "179493"
+BRAINSHOP_URL = f"http://api.brainshop.ai/get?bid=179493&key=xhtYMPBNaG5ykdiz&uid=[uid]&msg=[msg]"
 
-from streamlit_chat import message
- 
+def get_brainshop_response(message):
+    response = requests.get(BRAINSHOP_URL + message)
+    return response.json()["cnt"]
 
-openai.api_key = "xhtYMPBNaG5ykdiz"
- 
+def main():
+    st.title("BrainShop ChatBot with Streamlit")
 
-def api_calling(prompt):
+    user_input = st.text_input("You:", key="input")
+    if st.button("Send"):
+        if user_input:
+            bot_response = get_brainshop_response(user_input)
+            st.text(f"Bot: {bot_response}")
 
-    completions = openai.Completion.create(
 
-        engine="text-davinci-003",
-
-        prompt=prompt,
-
-        max_tokens=1024,
-
-        n=1,
-
-        stop=None,
-
-        temperature=0.5,
-
-    )
-
-    message = completions.choices[0].text
-
-    return message
- 
-
-st.title("ChatGPT ChatBot With Streamlit and OpenAI")
-
-if 'user_input' not in st.session_state:
-
-    st.session_state['user_input'] = []
- 
-
-if 'openai_response' not in st.session_state:
-
-    st.session_state['openai_response'] = []
- 
-
-def get_text():
-
-    input_text = st.text_input("write here", key="input")
-
-    return input_text
- 
-
-user_input = get_text()
- 
-
-if user_input:
-
-    output = api_calling(user_input)
-
-    output = output.lstrip("\n")
- 
-
-    # Store the output
-
-    st.session_state.openai_response.append(user_input)
-
-    st.session_state.user_input.append(output)
- 
-
-message_history = st.empty()
- 
-
-if st.session_state['user_input']:
-
-    for i in range(len(st.session_state['user_input']) - 1, -1, -1):
-
-        # This function displays user input
-
-        message(st.session_state["user_input"][i], 
-
-                key=str(i),avatar_style="icons")
-
-        # This function displays OpenAI response
-
-        message(st.session_state['openai_response'][i], 
-
-                avatar_style="miniavs",is_user=True,
-
-                key=str(i) + 'data_by_user')
+if __name__ == "__main__":
+    main()
