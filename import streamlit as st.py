@@ -5,7 +5,7 @@ import openai
 from streamlit_chat import message
  
 
-openai.api_key = "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"
+openai.api_key = "xhtYMPBNaG5ykdiz"
  
 
 def api_calling(prompt):
